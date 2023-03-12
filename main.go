@@ -30,13 +30,11 @@ func (cs *ChatServer) Broadcast(msg []byte) {
 	defer cs.mu.Unlock()
 
 	for conn := range cs.clients {
-		go func(conn *websocket.Conn) {
-			err := conn.WriteMessage(websocket.TextMessage, msg)
-			if err != nil {
-				log.Println(err)
-				return
-			}
-		}(conn)
+		err := conn.WriteMessage(websocket.TextMessage, msg)
+		if err != nil {
+			log.Println(err)
+			continue
+		}
 	}
 }
 
