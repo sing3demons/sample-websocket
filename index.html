@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      #textbox {
+        width: 600px;
+        height: 300px;
+        border: 1px solid black;
+        overflow: auto;
+      }
+    </style>
+    <title>Chat</title>
+  </head>
+  <body>
+    <h1>Chat</h1>
+    <div id="textbox"></div>
+    <form id="chatForm">
+      <div><label for="msgbox"> MSG </label></div>
+      <div><input type="text" id="msgbox" /></div>
+    </form>
+    <script>
+      const ws = new WebSocket(`ws://${location.host}/ws`)
+
+      ws.onmessage = (event) => {
+        console.log(event.data)
+        let p = document.createElement('p')
+        p.append(event.data)
+        let textbox = document.querySelector('#textbox')
+        textbox.append(p)
+      }
+
+      let chatForm = document.querySelector('#chatForm')
+      chatForm.onsubmit = (event) => {
+        event.preventDefault()
+        let message = document.querySelector('#msgbox')
+        ws.send(message.value)
+        message.value = ''
+        return false
+      }
+    </script>
+  </body>
+</html>
